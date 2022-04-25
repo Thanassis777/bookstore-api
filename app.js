@@ -1,13 +1,26 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const url = 'mongodb://localhost/BookDb'
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
 
-const app = express()
+const server = 'mongodb://localhost/BookDb';
+const port = process.env.PORT || 9000;
 
-mongoose.connect(url, {newUserParser: true})
+const app = express();
 
-const con = mongoose.connection
+mongoose.connect(server);
+
+const con = mongoose.connection;
 
 con.on('open', () => {
-    console.log('connected...');
-})
+   console.log('connected...');
+});
+
+app.use(express.json()); // middleware
+app.use(cors());
+
+const bookRouter = require('./routes/books');
+app.use('/books', bookRouter);
+
+app.listen(port, () => {
+   console.log(`** Server started on port: ${port} **`);
+});
