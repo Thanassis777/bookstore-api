@@ -19,7 +19,12 @@ app.use(express.json()); // middleware
 app.use(cors());
 
 const bookRouter = require('./routes/books');
+const categoryRouter = require('./routes/categories');
+const avatarRouter = require('./routes/avatar');
+
 app.use('/books', bookRouter);
+app.use('/categories', categoryRouter);
+app.use('/books/avatar', avatarRouter);
 
 app.listen(port, () => {
    console.log(`** Server started on port: ${port} **`);

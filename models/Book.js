@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const boookSchema = new mongoose.Schema({
    isbn: {
+      unique: true,
       type: Number,
       required: true,
    },
@@ -13,10 +14,18 @@ const boookSchema = new mongoose.Schema({
       type: String,
       required: true,
    },
-   author: {
-      type: String,
-      required: true,
-   },
+   authors: [
+      {
+         type: String,
+         required: true,
+      },
+   ],
+   category: [
+      {
+         type: String,
+         required: true,
+      },
+   ],
    publisher: {
       type: String,
       required: true,
@@ -24,6 +33,7 @@ const boookSchema = new mongoose.Schema({
    published: {
       type: Date,
       required: true,
+      default: Date.now,
    },
    pages: {
       type: Number,
@@ -36,6 +46,9 @@ const boookSchema = new mongoose.Schema({
    description: {
       type: String,
       required: true,
+   },
+   avatar: {
+      type: Buffer,
    },
 });
 
