@@ -1,10 +1,8 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const boookSchema = new mongoose_1.default.Schema({
+exports.bookSchema = void 0;
+const mongoose_1 = require("mongoose");
+exports.bookSchema = new mongoose_1.Schema({
     isbn: {
         unique: true,
         type: Number,
@@ -55,4 +53,5 @@ const boookSchema = new mongoose_1.default.Schema({
         type: Buffer,
     },
 });
-module.exports = mongoose_1.default.model('Book', boookSchema);
+const Book = (0, mongoose_1.model)('Book', exports.bookSchema);
+exports.default = Book;

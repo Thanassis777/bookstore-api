@@ -1,10 +1,7 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const categorySchema = new mongoose_1.default.Schema({
+const mongoose_1 = require("mongoose");
+const categorySchema = new mongoose_1.Schema({
     code: {
         unique: true,
         type: String,
@@ -16,4 +13,5 @@ const categorySchema = new mongoose_1.default.Schema({
         enum: ['Action', 'Science', 'Fantasy', 'Mystery', 'Thriller'],
     },
 });
-module.exports = mongoose_1.default.model('Category', categorySchema);
+const Category = (0, mongoose_1.model)('Category', categorySchema);
+exports.default = Category;
