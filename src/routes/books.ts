@@ -2,8 +2,6 @@ import { Router } from 'express';
 import { createBook, deleteAllBooks, deleteBook, getBook, getBooks, updateBook } from '../controllers/books';
 const bookRouter = Router();
 
-const Book = require('../models/Book');
-
 bookRouter.get('/', getBooks);
 
 bookRouter.get('/:id', getBook);
