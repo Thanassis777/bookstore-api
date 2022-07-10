@@ -5,6 +5,14 @@ interface ICategory extends Document {
    label: string;
 }
 
+export enum Categories {
+   Action = '01',
+   Science = '02',
+   Fantasy = '03',
+   Mystery = '04',
+   Thriller = '05',
+}
+
 const categorySchema = new Schema<ICategory>({
    code: {
       unique: true,
@@ -14,7 +22,7 @@ const categorySchema = new Schema<ICategory>({
    label: {
       type: String,
       required: true,
-      enum: ['Action', 'Science', 'Fantasy', 'Mystery', 'Thriller'],
+      enum: Object.keys(Categories),
    },
 });
 

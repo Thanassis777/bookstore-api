@@ -9,49 +9,53 @@ export const getBooks: RequestHandler<typeof Book> = async (req, res) => {
    try {
       const books = await Book.find();
 
-      res.json(books);
+      res.send(books);
    } catch (err) {
-      res.send('Error ' + err);
+      res.status(500).send('Error ' + err);
    }
 };
 
 export const getBook: RequestHandler<BookId> = async (req, res) => {
+   const _id = req.params.id;
+
    try {
-      const book = await Book.findById(req.params.id);
-      if (!book) res.status(404).send('The Book with the given ID was not found.');
-      res.json(book);
+      const book = await Book.findById(_id);
+      if (!book) return res.status(404).send('The Book with the given ID was not found.');
+      res.send(book);
    } catch (err) {
-      res.status(404);
-      res.send({ error: err });
+      res.status(500).send({ error: err });
    }
 };
 
 export const createBook: RequestHandler = async (req, res) => {
-   const book = new Book({
-      isbn: req.body.isbn,
-      title: req.body.title,
-      subtitle: req.body.subtitle,
-      publisher: req.body.publisher,
-      published: req.body.published,
-      category: req.body.category,
-      pages: req.body.pages,
-      rating: req.body.rating,
-      authors: req.body.authors,
-      description: req.body.description,
-   });
+   const book = new Book(req.body);
 
    try {
       const newBook = await book.save();
-      res.json(newBook);
+      res.status(201).send(newBook);
    } catch (err) {
       res.status(400).send(err);
    }
 };
 
 export const updateBook: RequestHandler<BookId> = async (req, res) => {
+   const _id = req.params.id;
+
+   const updates = Object.keys(req.body);
+   const allowedUpdates = ['....'];
+   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+
+   if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates' });
+
    try {
-      const book = await Book.findById(req.params.id);
-   } catch (err) {}
+      // new -> return updated User
+      const book = await Book.findByIdAndUpdate(_id, req.body, { new: true, runValidators: true });
+
+      if (!book) return res.status(404).send();
+      res.send(book);
+   } catch (err) {
+      res.status(400).send(err);
+   }
 };
 
 export const deleteAllBooks: RequestHandler = async (req, res) => {
@@ -69,22 +73,15 @@ export const deleteAllBooks: RequestHandler = async (req, res) => {
 };
 
 export const deleteBook: RequestHandler<BookId> = async (req, res) => {
-   const id = req.params.id;
-   Book.findByIdAndRemove(id)
-      .then((data) => {
-         if (!data) {
-            res.status(404).send({
-               message: `Cannot delete Book with id=${id}. Maybe Book was not found!`,
-            });
-         } else {
-            res.send({
-               message: 'Book was deleted successfully!',
-            });
-         }
-      })
-      .catch(() => {
-         res.status(500).send({
-            message: 'Could not delete Book with id=' + id,
-         });
-      });
+   const _id = req.params.id;
+
+   try {
+      const book = await Book.findByIdAndDelete(_id);
+
+      if (!book) return res.status(404).send(`Cannot delete Book with id=${_id}. Book was not found!`);
+
+      res.status(200).send('Book was deleted successfully!');
+   } catch (err) {
+      res.status(500).send();
+   }
 };
