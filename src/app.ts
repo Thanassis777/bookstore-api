@@ -6,7 +6,6 @@ import { json } from 'body-parser';
 import bookRouter from './routes/books';
 import categoryRouter from './routes/categories';
 import avatarRouter from './routes/avatar';
-import User from './models/User';
 import userRouter from './routes/users';
 
 const server = 'mongodb://localhost:27017/BookDb';

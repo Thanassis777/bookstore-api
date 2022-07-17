@@ -17,10 +17,10 @@ const Category_1 = __importDefault(require("../models/Category"));
 const getCategories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const categories = yield Category_1.default.find();
-        res.json(categories);
+        res.send(categories);
     }
     catch (err) {
-        res.send('Error ' + err);
+        res.status(404).send('Error ' + err);
     }
 });
 exports.getCategories = getCategories;

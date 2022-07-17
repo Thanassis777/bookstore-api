@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const books_1 = require("../controllers/books");
 const bookRouter = (0, express_1.Router)();
-const Book = require('../models/Book');
 bookRouter.get('/', books_1.getBooks);
 bookRouter.get('/:id', books_1.getBook);
 bookRouter.post('/', books_1.createBook);

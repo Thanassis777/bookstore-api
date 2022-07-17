@@ -15,17 +15,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAvatar = exports.avatarFail = exports.createAvatar = void 0;
 const Book_1 = __importDefault(require("../models/Book"));
 const createAvatar = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    Book_1.default.findOneAndUpdate({ _id: req.params.id }, {
-        $set: {
-            avatar: req.file.buffer,
-        },
-    }, { new: true }, (err, Book) => {
-        if (err) {
-            res.send(err);
-        }
-        else
-            res.json(Book);
-    });
+    const _id = req.params.id;
+    if (req.file === undefined)
+        return res.status(400).send('Please upload a file');
+    try {
+        const updatedBook = yield Book_1.default.findByIdAndUpdate(_id, { avatar: req.file.buffer }, { new: true, runValidators: true });
+        if (!updatedBook)
+            return res.status(404).send('Book not found with id: ' + _id);
+        res.send(updatedBook);
+        // Book.findOneAndUpdate(
+        //    { _id },
+        //    {
+        //       $set: {
+        //          avatar: req.file!.buffer,
+        //       },
+        //    },
+        //    { new: true },
+        //    (err, Book) => {
+        //       if (err) {
+        //          res.send(err);
+        //       } else res.send(Book);
+        //    }
+        // );
+    }
+    catch (err) {
+        res.status(400).send(err);
+    }
 });
 exports.createAvatar = createAvatar;
 const avatarFail = (err, req, res, next) => {
@@ -35,10 +50,11 @@ const avatarFail = (err, req, res, next) => {
 };
 exports.avatarFail = avatarFail;
 const getAvatar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const _id = req.params.id;
     try {
-        const book = yield Book_1.default.findById(req.params.id);
+        const book = yield Book_1.default.findById(_id);
         if (!book || !book.avatar) {
-            throw new Error();
+            return res.status(404).send('The Book with the given ID was not found.');
         }
         res.set('Content-Type', 'image/jpg');
         res.send(book.avatar);

@@ -11,6 +11,7 @@ export interface IBook extends Document {
    publisher: string;
    published: Date;
    pages: number;
+   price: Number;
    rating: number;
    description: string;
    avatar: Buffer;
@@ -85,6 +86,11 @@ export const bookSchema = new Schema<IBook>({
       required: true,
       min: 1,
       max: 1000,
+   },
+   price: {
+      type: Number,
+      required: true,
+      min: 1,
    },
    rating: {
       type: Number,

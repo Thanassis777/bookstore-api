@@ -1,6 +1,5 @@
 import User from '../models/User';
 import { RequestHandler } from 'express';
-import { debug } from 'util';
 
 export const createUser: RequestHandler = async (req, res) => {
    const user = new User(req.body);
@@ -8,21 +7,21 @@ export const createUser: RequestHandler = async (req, res) => {
 
    try {
       await user.save();
-      res.status(201).send(user);
-      // User.findOne({ email }, (err: Error, currentEmail: any) => {
-      //    if (err) {
-      //       return res.status(400);
-      //    }
-      //    if (currentEmail) {
-      //       return res.status(400).send('User with same email already exists');
-      //    } else {
-      //       user.save();
-      //       res.status(201).send(user);
-      //    }
-      // });
+      const token = await user.generateAuthToken();
+      res.status(201).send({ user, token });
+   } catch (err: any) {
+      if (err.code === 11000) return res.status(400).send({ message: 'User already exists with email: ' + email });
+      res.status(400).send({ message: err });
+   }
+};
+
+export const loginUser: RequestHandler = async (req, res) => {
+   try {
+      const user = await User.findByCredentials(req.body.email, req.body.password);
+      const token = await user.generateAuthToken();
+      res.send({ user, token });
    } catch (err) {
-      debugger;
-      res.status(400).send(err);
+      res.status(400).send({ message: 'Unable to login' });
    }
 };
 
