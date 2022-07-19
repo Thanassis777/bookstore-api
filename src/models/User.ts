@@ -7,7 +7,7 @@ interface IUser {
    name: string;
    email: string;
    password: string;
-   age: number;
+   role: 'admin' | 'user';
    tokens: [{}];
 }
 
@@ -48,14 +48,10 @@ const userSchema: Schema<IUserDocument> = new Schema({
          }
       },
    },
-   age: {
-      type: Number,
-      default: 0,
-      validate(value: number) {
-         if (value < 0) {
-            throw new Error('Age must be a positive number');
-         }
-      },
+   role: {
+      type: String,
+      default: 'user',
+      enum: ['admin', 'user'],
    },
    tokens: [
       {

@@ -10,7 +10,8 @@ export const createUser: RequestHandler = async (req, res) => {
       const token = await user.generateAuthToken();
       res.status(201).send({ user, token });
    } catch (err: any) {
-      if (err.code === 11000) return res.status(400).send({ message: 'User already exists with email: ' + email });
+      if (err.code === 11000)
+         return res.status(429).send({ status: 429, message: 'User already exists with email: ' + email });
       res.status(400).send({ message: err });
    }
 };
