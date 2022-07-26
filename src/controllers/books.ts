@@ -5,13 +5,24 @@ export type BookId = {
    id: string;
 };
 
-export const getBooks: RequestHandler<typeof Book> = async (req, res) => {
+export const getBooks: RequestHandler<typeof Book> = async (req, res: any) => {
    try {
-      const books = await Book.find();
-
-      res.send(books);
+      res.send(res.paginatedResults);
    } catch (err) {
       res.status(500).send('Error ' + err);
+   }
+};
+
+export const searchBookWithParam: RequestHandler = async (req, res) => {
+   try {
+      // @ts-ignore
+      if (!res.paginatedResults.results.length)
+         return res.status(404).send('The Book with the given ID was not found.');
+
+      // @ts-ignore
+      res.send(res.paginatedResults);
+   } catch (err) {
+      res.status(500).send({ error: err });
    }
 };
 

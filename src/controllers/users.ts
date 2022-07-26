@@ -19,7 +19,8 @@ export const createUser: RequestHandler = async (req, res) => {
 export const loginUser: RequestHandler = async (req, res) => {
    try {
       const user = await User.findByCredentials(req.body.email, req.body.password);
-      const token = await user.generateAuthToken();
+      const token = await user.generateAuthToken(user.role);
+
       res.send({ user, token });
    } catch (err) {
       res.status(400).send({ message: 'Unable to login' });

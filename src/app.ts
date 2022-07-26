@@ -7,6 +7,7 @@ import bookRouter from './routes/books';
 import categoryRouter from './routes/categories';
 import avatarRouter from './routes/avatar';
 import userRouter from './routes/users';
+// import Book from './models/Book';
 
 const server = 'mongodb://localhost:27017/BookDb';
 const port = process.env.PORT || 9000;
@@ -14,9 +15,6 @@ const port = process.env.PORT || 9000;
 const app = express();
 
 mongoose.connect(server);
-
-// useFindAndModify
-
 const con = mongoose.connection;
 
 con.on('open', () => {

@@ -1,7 +1,7 @@
 import { Document, model, Schema, Model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 
 interface IUser {
    name: string;
@@ -12,12 +12,14 @@ interface IUser {
 }
 
 interface IUserDocument extends IUser, Document {
-   generateAuthToken: () => Promise<string>;
+   generateAuthToken: (role?: string) => Promise<string>;
 }
 
 interface IUserModel extends Model<IUserDocument> {
    findByCredentials: (email: string, password: string) => Promise<IUserDocument>;
 }
+
+export const SECRET_KEY: Secret = 'thisismynewtoken';
 
 const userSchema: Schema<IUserDocument> = new Schema({
    name: {
@@ -63,9 +65,9 @@ const userSchema: Schema<IUserDocument> = new Schema({
    ],
 });
 
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function (role: string) {
    const user = this;
-   const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewtoken');
+   const token = jwt.sign({ _id: user._id.toString(), role }, SECRET_KEY);
 
    user.tokens = user.tokens.concat({ token });
    await user.save();
