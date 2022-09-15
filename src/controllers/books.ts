@@ -9,20 +9,19 @@ export const getBooks: RequestHandler<typeof Book> = async (req, res: any) => {
    try {
       res.send(res.paginatedResults);
    } catch (err) {
-      res.status(500).send('Error ' + err);
+      res.status(500).send({ message: err });
    }
 };
 
 export const searchBookWithParam: RequestHandler = async (req, res) => {
    try {
       // @ts-ignore
-      if (!res.paginatedResults.results.length)
-         return res.status(404).send('The Book with the given ID was not found.');
+      if (!res.paginatedResults.results.length) return res.status(404).send({ message: 'Could not find book' });
 
       // @ts-ignore
       res.send(res.paginatedResults);
    } catch (err) {
-      res.status(500).send({ error: err });
+      res.status(500).send({ message: err });
    }
 };
 
